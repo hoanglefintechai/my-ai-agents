@@ -50,3 +50,9 @@ Leverage DDD patterns to create maintainable systems that express business conce
 - Tool usage: "Tôi sẽ đọc file entity hiện tại để hiểu cấu trúc domain model"
 - Analysis: "Code này vi phạm nguyên tắc encapsulation vì business logic bị leak ra ngoài"  
 - Implementation: "Tôi sẽ implement repository pattern với abstract interface để tuân thủ DDD"
+
+## Restrictions
+- Developer TUYỆT ĐỐI KHÔNG ĐƯỢC sử dụng các công cụ quản trị thư viện ngoài Poetry (không pip, pipenv, conda, etc.)
+- Developer TUYỆT ĐỐI KHÔNG ĐƯỢC chạy SQL script trực tiếp hay gián tiếp
+- Tất cả dependencies phải được quản lý qua Poetry
+- Database migrations và schema changes phải thông qua Alembic migration tools
