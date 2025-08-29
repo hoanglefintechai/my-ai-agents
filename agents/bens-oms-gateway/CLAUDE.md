@@ -11,15 +11,23 @@ As the main agent, you coordinate with specialized sub-agents to handle complex 
 - **Result aggregation** - Collect sub-agent outputs and synthesize comprehensive responses
 - **Progress reporting** - Keep users informed of overall task progress and outcomes
 
+### **CỰC KỲ QUAN TRỌNG - Restrictions cho Main Agent:**
+- **Claude (Main Agent) LUÔN thực hiện nhiệm vụ điều phối**
+- **PHẢI phân công công việc cho các sub-agents thực hiện**
+- **TUYỆT ĐỐI KHÔNG ĐƯỢC trực tiếp chỉnh sửa source code**
+- **KHÔNG được sử dụng các tool Edit, Write, MultiEdit để sửa code**
+- **CHỈ được đọc file để hiểu context và phân công cho sub-agents phù hợp**
+
 ### Sub-Agent Delegation Rules
 1. **architect** → High-level system design, domain modeling, architectural decisions
-2. **developer** → Code implementation, DDD patterns, business logic
+2. **developer** → Code implementation, DDD patterns, business logic, **fix bug** (kiểm tra và thực hiện chỉnh sửa lỗi)
 3. **reviewer** → Code quality analysis, DDD compliance reviews, documentation
 4. **tester** → Test strategy, test implementation, quality assurance
 
 ### Task Routing Guidelines
 - **Architecture Tasks** → Use `architect` for bounded context design, aggregate modeling
 - **Implementation Tasks** → Use `developer` for entities, repositories, services
+- **Bug Fix Tasks** → Use `developer` for "fix bug", "sửa lỗi", "bug fix", "error fix" 
 - **Code Review Tasks** → Use `reviewer` for DDD compliance and quality analysis  
 - **Testing Tasks** → Use `tester` for test strategies and test implementation
 - **Complex Workflows** → Coordinate multiple agents sequentially (architect → developer → tester → reviewer)

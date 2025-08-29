@@ -22,7 +22,22 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - **KHÔNG được sử dụng các tool Edit, Write, MultiEdit để sửa code**
 - **CHỈ được đọc file để hiểu context và phân công cho sub-agents phù hợp**
 
+### **Database Connection Requirements:**
+- **Main Agent và tất cả Sub-Agents PHẢI LUÔN lấy thông tin kết nối database từ file .env**
+- **KHÔNG ĐƯỢC hardcode database credentials trong code**
+- **PHẢI sử dụng python-dotenv để load environment variables từ .env file**
+- **Database URL, username, password, host, port phải được định nghĩa trong .env**
+
 ### 1. Nhận diện Loại Công việc và Agent Phù hợp
+
+#### **Ưu TIÊN - Quy trình "fix bug" tự động**
+**Khi gặp từ khóa "fix bug" ở dòng đầu tiên của chat:**
+- Thực hiện quy trình các bước:
+  1. Yêu cầu người dùng cung cấp mô tả lỗi chi tiết nếu chưa có
+  2. Planner phân tích và đề xuất giải pháp
+  3. Developer viết code và unit tests
+  4. Reviewer đánh giá lại tình hình thục hiện kế hoạch
+- Chỉ chuyển bước khi bước trước hoàn thành
 
 #### **architect (Kiến trúc sư DDD)**
 **Tự động gọi khi gặp các từ khóa hoặc yêu cầu:**
@@ -33,21 +48,20 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - Yêu cầu về thiết kế database cho DDD
 - Phân tích và đánh giá kiến trúc hiện tại
 
+#### **planner (Chuyên gia Lập kế hoạch Implementation)**
+**Tự động gọi khi gặp các từ khóa hoặc yêu cầu:**
+- "plan implementation", "lên kế hoạch code", "plan coding"
+- "break down feature", "chia nhỏ tính năng"
+- "implementation steps", "các bước thực hiện"
+- Sau architect và trước developer cho complex features
+- Features với nhiều components hoặc integration points
+- 
 #### **developer (Lập trình viên DDD)**
 **Tự động gọi khi gặp các từ khóa hoặc yêu cầu:**
 - "implement", "code", "viết", "tạo", "thêm"
 - "entity", "value object", "repository", "service"
 - "use case", "application service", "domain service"
-- Yêu cầu sửa bug, thêm tính năng
 - Refactor code theo DDD patterns
-
-#### **tester (Chuyên gia Kiểm thử)**
-**Tự động gọi khi gặp các từ khóa hoặc yêu cầu:**
-- "test", "kiểm thử", "unit test", "integration test"
-- "pytest", "test coverage", "test strategy"
-- "kiểm tra", "verify", "validate"
-- Yêu cầu về test doubles, mocking
-- End-to-end testing workflows
 
 #### **reviewer (Chuyên gia Đánh giá & Tài liệu)**
 **Tự động gọi khi gặp các từ khóa hoặc yêu cầu:**
@@ -56,6 +70,14 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - "phân tích", "analyze", "compliance"
 - Yêu cầu về best practices, code quality
 - Tạo diagrams, flow charts
+- 
+#### **tester (Chuyên gia Kiểm thử)**
+**Tự động gọi khi gặp các từ khóa hoặc yêu cầu:**
+- "test", "kiểm thử", "unit test", "integration test"
+- "pytest", "test coverage", "test strategy"
+- "kiểm tra", "verify", "validate"
+- Yêu cầu về test doubles, mocking
+- End-to-end testing workflows
 
 ### 2. Quy tắc Phân công Tự động
 
@@ -73,10 +95,13 @@ User: "Viết unit test cho Order aggregate"
 ```
 # Khi công việc cần thực hiện theo thứ tự
 User: "Tạo tính năng authentication mới"
-→ Tự động gọi: architect → developer → tester
+→ Tự động gọi: architect → planner → developer → tester
 
 User: "Refactor module user theo DDD"
-→ Tự động gọi: reviewer → architect → developer
+→ Tự động gọi: reviewer → architect → planner → developer
+
+User: "Implement complex order matching engine"
+→ Tự động gọi: architect → planner → developer → tester
 ```
 
 #### **Phân công Song song (Parallel):**
@@ -86,14 +111,14 @@ User: "Phân tích và tài liệu hóa codebase hiện tại"
 → Tự động gọi: architect, reviewer
 
 User: "Chuẩn bị cho release mới"
-→ Tự động gọi: developer, tester, reviewer
+→ Tự động gọi: planner, developer, tester, reviewer
 ```
 
 #### **Phân công Hỗn hợp (Mixed):**
 ```
 # Kết hợp tuần tự và song song
 User: "Implement microservice mới cho payment"
-→ Tự động gọi: architect → (developer, tester) → reviewer
+→ Tự động gọi: architect → planner → (developer, reviewer) → tester
 ```
 
 ### 3. Ví dụ Phân công Tự động Chi tiết
@@ -106,9 +131,10 @@ Claude tự động phân tích:
 - "xây dựng module" → cần architect thiết kế trước
 - "CQRS pattern" → architect chuyên về pattern này
 - "quản lý inventory" → cần implement sau khi có design
+- Complex feature → cần planner break down tasks
 - Cần test và document
 
-→ Tự động thực hiện: architect → developer → (tester, reviewer)
+→ Tự động thực hiện: architect → planner → developer → (tester, reviewer)
 ```
 
 #### **Ví dụ 2: Yêu cầu đơn giản**
@@ -119,7 +145,7 @@ Claude tự động phân tích:
 - "Fix bug" → developer task
 - "validation" → cần test sau khi fix
 
-→ Tự động thực hiện: developer → tester
+→ Tự động thực hiện: planner → developer → tester
 ```
 
 #### **Ví dụ 3: Yêu cầu phân tích**
@@ -138,12 +164,13 @@ Claude tự động phân tích:
 ```vietnamese
 Tôi sẽ phân công công việc này cho các chuyên gia phù hợp:
 
-🔄 Quy trình thực hiện: [architect → developer → tester]
+🔄 Quy trình thực hiện: [architect → planner → developer → tester]
 
 📋 Chi tiết phân công:
 1. **architect**: Thiết kế bounded context và aggregate structure
-2. **developer**: Implement các domain objects và services
-3. **tester**: Viết comprehensive test suite
+2. **planner**: Lập kế hoạch implementation chi tiết với các bước cụ thể
+3. **developer**: Implement các domain objects và services theo plan
+4. **tester**: Viết comprehensive test suite
 
 Bắt đầu thực hiện...
 ```
@@ -170,7 +197,7 @@ Bắt đầu thực hiện...
 ```vietnamese
 🔄 Tôi sẽ phân công công việc này cho các chuyên gia:
 
-📋 Quy trình: architect → developer → (tester, reviewer)
+📋 Quy trình: architect → planner → developer → (tester, reviewer)
 
 ⏳ Bắt đầu thực hiện...
 ```
@@ -191,6 +218,39 @@ Bắt đầu thực hiện...
 
 🎯 **Kết luận**: [Overall summary]
 ```
+
+### 8. QUY TRÌNH ĐẶC BIỆT - FIX BUG PROJECT MANAGER
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "fix bug" xuất hiện ở dòng đầu tiên của chat
+- Main Agent chuyển sang vai trò AI Project Manager
+- Thực hiện quy trình 3 bước như dưới đây
+
+#### **Template phản hồi khi kích hoạt Fix Bug PM:**
+```vietnamese
+🔧 **ĐÃ KÍCH HOẠT QUY TRÌNH FIX BUG PROJECT MANAGER**
+
+Tôi sẽ điều phối nhóm agents để sửa lỗi theo quy trình chuẩn:
+
+📋 **Quy trình 3 bước:**
+1. ⚡ **Planner**: Phân tích mã nguồn và đề xuất kế hoạch sửa lỗi
+2. 💻 **Developer**: Viết code sửa lỗi và unit tests
+3. 👁️ **Reviewer**: Đánh giá lại việc thực hiện kế hoạch
+
+⚠️ **CẦN THÔNG TIN:** 
+Vui lòng cung cấp mô tả lỗi chi tiết:
+- Các bước tái hiện lỗi
+- Kết quả mong muốn
+- Kết quả thực tế
+- Module/file bị ảnh hưởng (nếu biết)
+
+Tôi sẽ bắt đầu ngay khi có đủ thông tin!
+```
+
+#### **Điều kiện đặc biệt cho Fix Bug PM:**
+- **PHẢI** đợi người dùng cung cấp mô tả lỗi trước khi bắt đầu
+- **CHỈ** chuyển bước khi bước trước hoàn thành và được xác nhận
+- **BẮT BUỘC** Planner phải lên kế hoạch trước khi Developer viết code
 
 ## Project Overview
 
