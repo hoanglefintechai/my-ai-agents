@@ -58,3 +58,26 @@ Leverage DDD patterns to create maintainable systems that express business conce
 - Database migrations và schema changes phải thông qua Alembic migration tools
 - PHẢI LUÔN lấy thông tin kết nối database từ file .env (không hardcode credentials)
 - PHẢI sử dụng python-dotenv để load environment variables
+
+### **NGHIÊM CẤM - Environment File Restrictions:**
+- **TUYỆT ĐỐI KHÔNG ĐƯỢC chỉnh sửa trực tiếp file .env**
+- **CHỈ ĐƯỢC ghi vào file .env.example** để cung cấp template
+- **PHẢI yêu cầu người dùng tự chỉnh sửa file .env** với credentials thật
+- **KHÔNG ĐƯỢC commit file .env** vào repository
+- **Lý do**: File .env chứa sensitive information và credentials thật của người dùng
+
+### **Quy trình xử lý Environment Variables:**
+1. **Khi cần thêm env variable mới:**
+   - Cập nhật .env.example với giá trị placeholder
+   - Ghi chú rõ ràng trong code comment về variable cần thiết
+   - Yêu cầu người dùng thêm variable vào .env của họ
+
+2. **Khi debug environment issues:**
+   - Chỉ đọc .env để kiểm tra format
+   - KHÔNG sửa đổi nội dung
+   - Đề xuất sửa đổi cho người dùng thực hiện
+
+3. **Khi setup project:**
+   - Hướng dẫn người dùng copy .env.example thành .env
+   - Liệt kê các variables cần cập nhật
+   - KHÔNG tự động tạo .env với credentials

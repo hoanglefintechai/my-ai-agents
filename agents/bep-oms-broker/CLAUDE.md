@@ -28,6 +28,15 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - **PHẢI sử dụng python-dotenv để load environment variables từ .env file**
 - **Database URL, username, password, host, port phải được định nghĩa trong .env**
 
+### **File Naming Convention:**
+- **Format**: `{week-of-year}-{increase-number}-{task-name}-{type}.md`
+- **increase-number**: Luôn là 3 chữ số tăng dần (001, 002, 003...)
+- **DUYÊN NHẤT**: Combination `{week-of-year}-{increase-number}` PHẢI duy nhất trong từng thư mục
+- **Ví dụ**: 
+  - `docs/plan/35-001-user-auth-plan.md`
+  - `docs/review/35-002-order-validation-review.md`
+  - `docs/research/35-003-payment-integration-research.md`
+
 ### 1. Nhận diện Loại Công việc và Agent Phù hợp
 
 #### **Ưu TIÊN - Quy trình ưu tiên**
@@ -36,7 +45,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   1. Planner phân tích yêu cầu và context
   2. Tạo kế hoạch step-by-step 
   3. Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
-     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+     (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
 - Chỉ sử dụng Planner agent
 
 **Khi gặp từ khóa "do rev" ở dòng đầu tiên của chat:**
@@ -44,7 +53,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   1. Reviewer phân tích code và thực hiện đánh giá
   2. Tạo báo cáo review toàn diện
   3. Ghi kết quả vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
-     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+     (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
 - Chỉ sử dụng Reviewer agent
 
 **Khi gặp từ khóa "do exe" ở dòng đầu tiên của chat:**
@@ -54,12 +63,22 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   3. Báo cáo tiến độ và kết quả hoàn thành
 - Chỉ sử dụng Developer agent
 
+**Khi gặp từ khóa "full exe" ở dòng đầu tiên của chat:**
+- Thực hiện quy trình implement toàn diện:
+  1. Developer implement code theo kế hoạch
+  2. Developer thực hiện unit tests
+  3. Developer báo cáo hoàn thành cho Main Agent
+  4. Reviewer review kết quả implement
+  5. Tester thực hiện testing sau khi Reviewer chấp nhận
+  6. Main Agent tổng hợp và báo cáo kết quả cuối cùng
+- Sử dụng Developer → Reviewer → Tester (tuần tự)
+
 **Khi gặp từ khóa "do res" ở dòng đầu tiên của chat:**
 - Thực hiện nghiên cứu độc lập:
   1. Architect và Reviewer nghiên cứu song song
   2. Main Agent tổng hợp kết quả từ cả hai agents
   3. Ghi kết quả vào file docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
-     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+     (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
 - Sử dụng Architect và Reviewer agents song song
 
 **Khi gặp từ khóa "full res" ở dòng đầu tiên của chat:**
@@ -68,7 +87,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   2. Main Agent tổng hợp và ghi kết quả nghiên cứu vào docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
   3. Planner dựa trên kết quả nghiên cứu để lập kế hoạch
   4. Ghi kế hoạch vào docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
-     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+     (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
   5. Reviewer review kế hoạch và đưa ra feedback
   6. Main Agent tổng hợp và báo cáo kết quả cuối cùng
 - Sử dụng Architect, Reviewer (research) → Planner → Reviewer (review plan)
@@ -503,7 +522,76 @@ Tôi sẽ điều phối Developer để thực hiện implement:
 - Muốn tập trung vào coding mà không cần planning/review
 - Có yêu cầu rõ ràng về implementation
 
-### 13. QUY TRÌNH ĐẶC BIỆT - DO RES
+### 13. QUY TRÌNH ĐẶC BIỆT - FULL EXE
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "full exe" xuất hiện ở dòng đầu tiên của chat
+- Cần quy trình implement toàn diện từ coding đến testing
+- Main Agent chuyển sang chế độ full execution workflow
+
+#### **Template phản hồi khi kích hoạt Full Exe:**
+```vietnamese
+💻🧪 **ĐÃ KÍCH HOẠT QUY TRÌNH FULL EXE**
+
+Tôi sẽ điều phối quy trình implement toàn diện:
+
+🎯 **Mục tiêu**: Implement → Unit Test → Review → Testing
+
+📊 **Quy trình Full Exe (3 giai đoạn):**
+
+**Giai đoạn 1 - Implementation & Unit Tests:**
+- **Developer**: Implement code theo kế hoạch
+- **Developer**: Viết unit tests cho code đã implement
+- **Developer**: Báo cáo hoàn thành cho Main Agent
+
+**Giai đoạn 2 - Code Review:**
+- **Reviewer**: Review kết quả implement
+- **Reviewer**: Đánh giá code quality và compliance
+- **Reviewer**: Chấp nhận hoặc yêu cầu sửa đổi
+
+**Giai đoạn 3 - Integration Testing:**
+- **Tester**: Thực hiện testing sau khi Reviewer chấp nhận
+- **Tester**: Integration tests và E2E tests
+- **Main Agent**: Tổng hợp và báo cáo kết quả cuối cùng
+
+⏳ Bắt đầu Full Execution workflow...
+```
+
+#### **Đặc điểm của Full Exe:**
+- **TOÀN DIỆN**: Từ implement → unit test → review → integration test
+- **TUẦN TỰ**: 3 giai đoạn thực hiện theo thứ tự nghiêm ngặt
+- **QUALITY GATE**: Mỗi giai đoạn có checkpoint quality
+- **COMPREHENSIVE**: Bao gồm cả unit và integration testing
+- **REVIEW REQUIRED**: Code phải được review trước khi testing
+
+#### **Workflow Full Exe:**
+```
+Implementation Phase:
+Developer implements code → Developer writes unit tests → Report to Main Agent
+                                    ↓
+Review Phase:
+Reviewer reviews code → Quality assessment → Accept/Reject decision
+                                    ↓ (if accepted)
+Testing Phase:
+Tester performs integration tests → E2E tests → Final report
+                                    ↓
+Main Agent consolidates final results
+```
+
+#### **Quality Gates trong Full Exe:**
+1. **Unit Tests Gate**: Code phải pass tất cả unit tests
+2. **Review Gate**: Code phải được Reviewer approve
+3. **Integration Tests Gate**: Code phải pass integration tests
+4. **Final Gate**: Tất cả tests pass và quality requirements met
+
+#### **Khi nào sử dụng Full Exe:**
+- Implement major features hoặc critical components
+- Cần đảm bảo quality cao với full testing coverage
+- Production-ready code cần comprehensive validation
+- Complex features với nhiều integration points
+- Khi quality và reliability là ưu tiên hàng đầu
+
+### 14. QUY TRÌNH ĐẶC BIỆT - DO RES
 
 #### **Kích hoạt tự động khi:**
 - Từ khóa "do res" xuất hiện ở dòng đầu tiên của chat
@@ -588,7 +676,7 @@ Main Agent sẽ tạo file docs/research/{week-of-year}-{increase-number}-{task-
 - Phân tích compliance requirements
 - Investigate về performance optimization approaches
 
-### 14. QUY TRÌNH ĐẶC BIỆT - FULL RES
+### 15. QUY TRÌNH ĐẶC BIỆT - FULL RES
 
 #### **Kích hoạt tự động khi:**
 - Từ khóa "full res" xuất hiện ở dòng đầu tiên của chat
