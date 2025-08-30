@@ -30,13 +30,26 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 
 ### 1. Nhận diện Loại Công việc và Agent Phù hợp
 
-#### **Ưu TIÊN - Quy trình "fix bug" tự động**
+#### **Ưu TIÊN - Quy trình ưu tiên**
+**Khi gặp từ khóa "do plan" ở dòng đầu tiên của chat:**
+- Thực hiện lập kế hoạch chi tiết:
+  1. Planner phân tích yêu cầu và context
+  2. Tạo kế hoạch step-by-step 
+  3. Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+- Chỉ sử dụng Planner agent
+
+**Khi gặp từ khóa "fast fix" ở dòng đầu tiên của chat:**
+- Thực hiện quy trình 2 bước nhanh:
+  1. **Lên kế hoạch (Planning)**: Planner phân tích vấn đề và đề xuất giải pháp cụ thể
+  2. **Chỉnh sửa (Editing)**: Developer thực hiện chỉnh sửa code theo kế hoạch và báo cáo hoàn thành
+- Không cần yêu cầu thông tin thêm, làm việc với thông tin hiện có
+- Chỉ chuyển bước khi bước trước hoàn thành
+
 **Khi gặp từ khóa "fix bug" ở dòng đầu tiên của chat:**
-- Thực hiện quy trình các bước:
-  1. Yêu cầu người dùng cung cấp mô tả lỗi chi tiết nếu chưa có
-  2. Planner phân tích và đề xuất giải pháp
-  3. Developer viết code và unit tests
-  4. Reviewer đánh giá lại tình hình thục hiện kế hoạch
+- Thực hiện quy trình 3 bước:
+  1. **Plan**: Planner phân tích và đề xuất giải pháp chi tiết
+  2. **Dev**: Developer viết code sửa lỗi và unit tests
+  3. **Review**: Reviewer đánh giá việc thực hiện kế hoạch
 - Chỉ chuyển bước khi bước trước hoàn thành
 
 #### **architect (Kiến trúc sư DDD)**
@@ -142,10 +155,10 @@ Claude tự động phân tích:
 User: "Fix bug validation trong User entity"
 
 Claude tự động phân tích:
-- "Fix bug" → developer task
+- "Fix bug" → cần plan trước, dev sau, review cuối
 - "validation" → cần test sau khi fix
 
-→ Tự động thực hiện: planner → developer → tester
+→ Tự động thực hiện: planner → developer → reviewer
 ```
 
 #### **Ví dụ 3: Yêu cầu phân tích**
@@ -233,24 +246,105 @@ Bắt đầu thực hiện...
 Tôi sẽ điều phối nhóm agents để sửa lỗi theo quy trình chuẩn:
 
 📋 **Quy trình 3 bước:**
-1. ⚡ **Planner**: Phân tích mã nguồn và đề xuất kế hoạch sửa lỗi
-2. 💻 **Developer**: Viết code sửa lỗi và unit tests
-3. 👁️ **Reviewer**: Đánh giá lại việc thực hiện kế hoạch
+1. ⚡ **Plan**: Planner phân tích mã nguồn và đề xuất kế hoạch sửa lỗi
+2. 💻 **Dev**: Developer viết code sửa lỗi và unit tests
+3. 👁️ **Review**: Reviewer đánh giá việc thực hiện kế hoạch
 
-⚠️ **CẦN THÔNG TIN:** 
-Vui lòng cung cấp mô tả lỗi chi tiết:
-- Các bước tái hiện lỗi
-- Kết quả mong muốn
-- Kết quả thực tế
-- Module/file bị ảnh hưởng (nếu biết)
-
-Tôi sẽ bắt đầu ngay khi có đủ thông tin!
+⏳ Bắt đầu thực hiện...
 ```
 
 #### **Điều kiện đặc biệt cho Fix Bug PM:**
-- **PHẢI** đợi người dùng cung cấp mô tả lỗi trước khi bắt đầu
 - **CHỈ** chuyển bước khi bước trước hoàn thành và được xác nhận
-- **BẮT BUỘC** Planner phải lên kế hoạch trước khi Developer viết code
+- **BẮT BUỘC** tuân thủ thứ tự: Plan → Dev → Review
+- **PHẢI** có unit tests trong bước Dev
+
+### 9. QUY TRÌNH ĐẶC BIỆT - FAST FIX
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "fast fix" xuất hiện ở dòng đầu tiên của chat
+- Main Agent chuyển sang chế độ sửa nhanh 2 bước
+
+#### **Template phản hồi khi kích hoạt Fast Fix:**
+```vietnamese
+⚡ **ĐÃ KÍCH HOẠT QUY TRÌNH FAST FIX**
+
+Tôi sẽ thực hiện sửa nhanh theo quy trình 2 bước:
+
+📋 **Quy trình Fast Fix:**
+1. 📝 **Lên kế hoạch (Planning)**: Planner phân tích và đề xuất giải pháp
+2. ✏️ **Chỉnh sửa (Editing)**: Developer thực hiện sửa code
+
+⏱️ Bắt đầu thực hiện ngay...
+```
+
+#### **Đặc điểm của Fast Fix:**
+- **NHANH**: Chỉ 2 bước - lên kế hoạch và chỉnh sửa
+- **ĐƠN GIẢN**: Không yêu cầu thông tin thêm từ người dùng
+- **TẬP TRUNG**: Chỉ sử dụng Planner và Developer
+- **HIỆU QUẢ**: Phù hợp cho các sửa đổi nhỏ và rõ ràng
+
+#### **So sánh Fast Fix vs Fix Bug:**
+| Tiêu chí | Fast Fix | Fix Bug |
+|----------|----------|---------|
+| Số bước | 2 bước | 3 bước |
+| Agents sử dụng | Planner, Developer | Planner, Developer, Reviewer |
+| Unit tests | Không bắt buộc | Bắt buộc |
+| Review | Không | Có |
+| Thời gian | Nhanh | Trung bình |
+
+### 10. QUY TRÌNH ĐẶC BIỆT - DO PLAN
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "do plan" xuất hiện ở dòng đầu tiên của chat
+- Cần lên kế hoạch chi tiết cho một task phức tạp
+- Main Agent chuyển sang chế độ lập kế hoạch
+
+#### **Template phản hồi khi kích hoạt Do Plan:**
+```vietnamese
+📋 **ĐÃ KÍCH HOẠT QUY TRÌNH DO PLAN**
+
+Tôi sẽ điều phối Planner để lên kế hoạch chi tiết:
+
+🎯 **Mục tiêu**: Tạo kế hoạch thực hiện chi tiết và lưu vào file
+
+📝 **Planner sẽ**:
+- Phân tích yêu cầu và context hiện tại
+- Lập kế hoạch từng bước cụ thể
+- Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+
+⏳ Bắt đầu lập kế hoạch...
+```
+
+#### **Đặc điểm của Do Plan:**
+- **CHI TIẾT**: Planner tạo kế hoạch step-by-step
+- **LƯU TRỮ**: Kế hoạch được ghi vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+- **TÁI SỬ DỤNG**: Có thể dùng lại kế hoạch cho các task tương tự
+- **THEO DÕI**: Dễ dàng track progress theo kế hoạch đã lập
+
+#### **Output của Do Plan:**
+Planner sẽ tạo file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md với cấu trúc:
+```markdown
+# Kế hoạch thực hiện: [Tên task]
+
+## Tổng quan
+[Mô tả ngắn gọn về task]
+
+## Các bước thực hiện
+1. **Bước 1**: [Mô tả chi tiết]
+   - Sub-task 1.1
+   - Sub-task 1.2
+   
+2. **Bước 2**: [Mô tả chi tiết]
+   - Sub-task 2.1
+   - Sub-task 2.2
+
+## Dependencies
+- [Liệt kê các phụ thuộc]
+
+## Ước lượng thời gian
+- Tổng thời gian: [X hours]
+- Chi tiết từng bước...
+```
 
 ## Project Overview
 
