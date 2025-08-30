@@ -38,6 +38,20 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   3. Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
 - Chỉ sử dụng Planner agent
 
+**Khi gặp từ khóa "do rev" ở dòng đầu tiên của chat:**
+- Thực hiện review chi tiết:
+  1. Reviewer phân tích code và thực hiện đánh giá
+  2. Tạo báo cáo review toàn diện
+  3. Ghi kết quả vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
+- Chỉ sử dụng Reviewer agent
+
+**Khi gặp từ khóa "do exe" ở dòng đầu tiên của chat:**
+- Thực hiện implement theo kế hoạch:
+  1. Developer đọc kế hoạch từ file plan hoặc yêu cầu
+  2. Thực hiện implement code theo từng bước
+  3. Báo cáo tiến độ và kết quả hoàn thành
+- Chỉ sử dụng Developer agent
+
 **Khi gặp từ khóa "fast fix" ở dòng đầu tiên của chat:**
 - Thực hiện quy trình 3 bước nhanh:
   1. **Tìm nguyên nhân (Root Cause)**: Developer phân tích và tìm nguyên nhân lỗi
@@ -351,6 +365,119 @@ Planner sẽ tạo file docs/plan/{week-of-year}-{increase-number}-{task-name}-p
 - Tổng thời gian: [X hours]
 - Chi tiết từng bước...
 ```
+
+### 11. QUY TRÌNH ĐẶC BIỆT - DO REV
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "do rev" xuất hiện ở dòng đầu tiên của chat
+- Cần review code hoặc đánh giá chất lượng
+- Main Agent chuyển sang chế độ review
+
+#### **Template phản hồi khi kích hoạt Do Rev:**
+```vietnamese
+👁️ **ĐÃ KÍCH HOẠT QUY TRÌNH DO REV**
+
+Tôi sẽ điều phối Reviewer để thực hiện đánh giá chi tiết:
+
+🎯 **Mục tiêu**: Thực hiện review toàn diện và lưu báo cáo vào file
+
+📋 **Reviewer sẽ**:
+- Phân tích code quality và architecture
+- Kiểm tra tuân thủ best practices và DDD principles
+- Đánh giá security và performance
+- Ghi báo cáo review vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
+
+⏳ Bắt đầu review...
+```
+
+#### **Đặc điểm của Do Rev:**
+- **TOÀN DIỆN**: Reviewer đánh giá nhiều khía cạnh (quality, security, performance)
+- **LƯU TRỮ**: Kết quả review được ghi vào file docs/review/
+- **TÁI SỬ DỤNG**: Có thể tham khảo cho các review tương tự
+- **THEO DÕI**: Dễ dàng track các vấn đề và cải thiện
+
+#### **Output của Do Rev:**
+Reviewer sẽ tạo file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md với cấu trúc:
+```markdown
+# Review Report: [Tên task]
+
+## Tổng quan
+[Mô tả ngắn gọn về nội dung được review]
+
+## Code Quality Assessment
+- **Điểm số**: [X/10]
+- **Ưu điểm**: [Liệt kê các điểm tốt]
+- **Vấn đề**: [Liệt kê các vấn đề cần sửa]
+
+## Architecture & Design
+- **DDD Compliance**: [Đánh giá tuân thủ DDD]
+- **Layer Separation**: [Đánh giá phân tách layer]
+- **Dependencies**: [Đánh giá dependency management]
+
+## Security & Performance
+- **Security Issues**: [Các vấn đề bảo mật]
+- **Performance Concerns**: [Các vấn đề hiệu năng]
+
+## Recommendations
+1. [Khuyến nghị 1]
+2. [Khuyến nghị 2]
+3. [Khuyến nghị 3]
+
+## Action Items
+- [ ] [Todo item 1]
+- [ ] [Todo item 2]
+```
+
+### 12. QUY TRÌNH ĐẶC BIỆT - DO EXE
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "do exe" xuất hiện ở dòng đầu tiên của chat
+- Cần implement code theo kế hoạch có sẵn
+- Main Agent chuyển sang chế độ execution
+
+#### **Template phản hồi khi kích hoạt Do Exe:**
+```vietnamese
+💻 **ĐÃ KÍCH HOẠT QUY TRÌNH DO EXE**
+
+Tôi sẽ điều phối Developer để thực hiện implement:
+
+🎯 **Mục tiêu**: Implement code theo kế hoạch đã được định nghĩa
+
+⚙️ **Developer sẽ**:
+- Đọc và phân tích kế hoạch implementation
+- Thực hiện code theo từng bước chi tiết
+- Tuân thủ DDD patterns và best practices
+- Báo cáo tiến độ và kết quả hoàn thành
+
+⏳ Bắt đầu implement...
+```
+
+#### **Đặc điểm của Do Exe:**
+- **TẬP TRUNG**: Chỉ sử dụng Developer agent
+- **TUÂN THỦ KẾ HOẠCH**: Follow theo plan đã được lập trước
+- **DDD COMPLIANCE**: Implement theo Domain-Driven Design principles
+- **BÁO CÁO TIẾN ĐỘ**: Developer báo cáo từng bước thực hiện
+- **KHÔNG REVIEW**: Chỉ implement, không có review step
+
+#### **Quy trình Do Exe:**
+1. **Đọc kế hoạch**: Developer phân tích plan từ file hoặc yêu cầu
+2. **Implement từng bước**: 
+   - Tạo domain objects (entities, value objects, aggregates)
+   - Implement repositories và services
+   - Tạo use cases và application services
+   - Implement presentation layer (gRPC services)
+3. **Tuân thủ standards**:
+   - Follow DDD patterns
+   - Use dependency injection
+   - Handle transactions properly
+   - Follow naming conventions
+4. **Báo cáo kết quả**: Summary về những gì đã implement
+
+#### **Khi nào sử dụng Do Exe:**
+- Đã có kế hoạch chi tiết từ "do plan"
+- Cần implement một feature hoàn chỉnh
+- Muốn tập trung vào coding mà không cần planning/review
+- Có yêu cầu rõ ràng về implementation
 
 ## Project Overview
 
