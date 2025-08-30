@@ -39,17 +39,19 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - Chỉ sử dụng Planner agent
 
 **Khi gặp từ khóa "fast fix" ở dòng đầu tiên của chat:**
-- Thực hiện quy trình 2 bước nhanh:
-  1. **Lên kế hoạch (Planning)**: Planner phân tích vấn đề và đề xuất giải pháp cụ thể
-  2. **Chỉnh sửa (Editing)**: Developer thực hiện chỉnh sửa code theo kế hoạch và báo cáo hoàn thành
+- Thực hiện quy trình 3 bước nhanh:
+  1. **Tìm nguyên nhân (Root Cause)**: Developer phân tích và tìm nguyên nhân lỗi
+  2. **Lên kế hoạch (Planning)**: Planner phân tích vấn đề và đề xuất giải pháp cụ thể
+  3. **Chỉnh sửa (Editing)**: Developer thực hiện chỉnh sửa code theo kế hoạch và báo cáo hoàn thành
 - Không cần yêu cầu thông tin thêm, làm việc với thông tin hiện có
 - Chỉ chuyển bước khi bước trước hoàn thành
 
 **Khi gặp từ khóa "fix bug" ở dòng đầu tiên của chat:**
-- Thực hiện quy trình 3 bước:
-  1. **Plan**: Planner phân tích và đề xuất giải pháp chi tiết
-  2. **Dev**: Developer viết code sửa lỗi và unit tests
-  3. **Review**: Reviewer đánh giá việc thực hiện kế hoạch
+- Thực hiện quy trình 4 bước:
+  1. **Root Cause**: Developer tìm nguyên nhân lỗi chi tiết
+  2. **Plan**: Planner phân tích và đề xuất giải pháp chi tiết
+  3. **Dev**: Developer viết code sửa lỗi và unit tests
+  4. **Review**: Reviewer đánh giá việc thực hiện kế hoạch
 - Chỉ chuyển bước khi bước trước hoàn thành
 
 #### **architect (Kiến trúc sư DDD)**
@@ -155,10 +157,10 @@ Claude tự động phân tích:
 User: "Fix bug validation trong User entity"
 
 Claude tự động phân tích:
-- "Fix bug" → cần plan trước, dev sau, review cuối
+- "Fix bug" → cần tìm root cause, plan, dev, review
 - "validation" → cần test sau khi fix
 
-→ Tự động thực hiện: planner → developer → reviewer
+→ Tự động thực hiện: developer → planner → developer → reviewer
 ```
 
 #### **Ví dụ 3: Yêu cầu phân tích**
@@ -237,7 +239,7 @@ Bắt đầu thực hiện...
 #### **Kích hoạt tự động khi:**
 - Từ khóa "fix bug" xuất hiện ở dòng đầu tiên của chat
 - Main Agent chuyển sang vai trò AI Project Manager
-- Thực hiện quy trình 3 bước như dưới đây
+- Thực hiện quy trình 4 bước như dưới đây
 
 #### **Template phản hồi khi kích hoạt Fix Bug PM:**
 ```vietnamese
@@ -245,49 +247,53 @@ Bắt đầu thực hiện...
 
 Tôi sẽ điều phối nhóm agents để sửa lỗi theo quy trình chuẩn:
 
-📋 **Quy trình 3 bước:**
-1. ⚡ **Plan**: Planner phân tích mã nguồn và đề xuất kế hoạch sửa lỗi
-2. 💻 **Dev**: Developer viết code sửa lỗi và unit tests
-3. 👁️ **Review**: Reviewer đánh giá việc thực hiện kế hoạch
+📋 **Quy trình 4 bước:**
+1. 🔍 **Root Cause**: Developer tìm nguyên nhân lỗi chi tiết
+2. 📝 **Plan**: Planner phân tích và đề xuất kế hoạch sửa lỗi
+3. 💻 **Dev**: Developer viết code sửa lỗi và unit tests
+4. 👁️ **Review**: Reviewer đánh giá việc thực hiện kế hoạch
 
 ⏳ Bắt đầu thực hiện...
 ```
 
 #### **Điều kiện đặc biệt cho Fix Bug PM:**
 - **CHỈ** chuyển bước khi bước trước hoàn thành và được xác nhận
-- **BẮT BUỘC** tuân thủ thứ tự: Plan → Dev → Review
+- **BẮT BUỘC** tuân thủ thứ tự: Root Cause → Plan → Dev → Review
 - **PHẢI** có unit tests trong bước Dev
 
 ### 9. QUY TRÌNH ĐẶC BIỆT - FAST FIX
 
 #### **Kích hoạt tự động khi:**
 - Từ khóa "fast fix" xuất hiện ở dòng đầu tiên của chat
-- Main Agent chuyển sang chế độ sửa nhanh 2 bước
+- Main Agent chuyển sang chế độ sửa nhanh 3 bước
 
 #### **Template phản hồi khi kích hoạt Fast Fix:**
 ```vietnamese
 ⚡ **ĐÃ KÍCH HOẠT QUY TRÌNH FAST FIX**
 
-Tôi sẽ thực hiện sửa nhanh theo quy trình 2 bước:
+Tôi sẽ thực hiện sửa nhanh theo quy trình 3 bước:
 
 📋 **Quy trình Fast Fix:**
-1. 📝 **Lên kế hoạch (Planning)**: Planner phân tích và đề xuất giải pháp
-2. ✏️ **Chỉnh sửa (Editing)**: Developer thực hiện sửa code
+1. 🔍 **Tìm nguyên nhân (Root Cause)**: Developer phân tích và tìm nguyên nhân lỗi
+2. 📝 **Lên kế hoạch (Planning)**: Planner phân tích và đề xuất giải pháp
+3. ✏️ **Chỉnh sửa (Editing)**: Developer thực hiện sửa code
 
 ⏱️ Bắt đầu thực hiện ngay...
 ```
 
 #### **Đặc điểm của Fast Fix:**
-- **NHANH**: Chỉ 2 bước - lên kế hoạch và chỉnh sửa
+- **NHANH**: Chỉ 3 bước - tìm nguyên nhân, lên kế hoạch và chỉnh sửa
 - **ĐƠN GIẢN**: Không yêu cầu thông tin thêm từ người dùng
-- **TẬP TRUNG**: Chỉ sử dụng Planner và Developer
+- **TẬP TRUNG**: Chỉ sử dụng Developer và Planner
 - **HIỆU QUẢ**: Phù hợp cho các sửa đổi nhỏ và rõ ràng
+- **PHÂN TÍCH TRƯỚC**: Developer tìm root cause trước khi plan
 
 #### **So sánh Fast Fix vs Fix Bug:**
 | Tiêu chí | Fast Fix | Fix Bug |
 |----------|----------|---------|
-| Số bước | 2 bước | 3 bước |
-| Agents sử dụng | Planner, Developer | Planner, Developer, Reviewer |
+| Số bước | 3 bước | 4 bước |
+| Bước đầu tiên | Developer tìm root cause | Developer tìm root cause |
+| Agents sử dụng | Developer, Planner | Developer, Planner, Reviewer |
 | Unit tests | Không bắt buộc | Bắt buộc |
 | Review | Không | Có |
 | Thời gian | Nhanh | Trung bình |
