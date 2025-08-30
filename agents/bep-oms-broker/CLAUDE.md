@@ -36,6 +36,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   1. Planner phân tích yêu cầu và context
   2. Tạo kế hoạch step-by-step 
   3. Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 - Chỉ sử dụng Planner agent
 
 **Khi gặp từ khóa "do rev" ở dòng đầu tiên của chat:**
@@ -43,6 +44,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   1. Reviewer phân tích code và thực hiện đánh giá
   2. Tạo báo cáo review toàn diện
   3. Ghi kết quả vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
+     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 - Chỉ sử dụng Reviewer agent
 
 **Khi gặp từ khóa "do exe" ở dòng đầu tiên của chat:**
@@ -51,6 +53,25 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
   2. Thực hiện implement code theo từng bước
   3. Báo cáo tiến độ và kết quả hoàn thành
 - Chỉ sử dụng Developer agent
+
+**Khi gặp từ khóa "do res" ở dòng đầu tiên của chat:**
+- Thực hiện nghiên cứu độc lập:
+  1. Architect và Reviewer nghiên cứu song song
+  2. Main Agent tổng hợp kết quả từ cả hai agents
+  3. Ghi kết quả vào file docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+- Sử dụng Architect và Reviewer agents song song
+
+**Khi gặp từ khóa "full res" ở dòng đầu tiên của chat:**
+- Thực hiện quy trình nghiên cứu toàn diện:
+  1. Architect và Reviewer nghiên cứu song song
+  2. Main Agent tổng hợp và ghi kết quả nghiên cứu vào docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+  3. Planner dựa trên kết quả nghiên cứu để lập kế hoạch
+  4. Ghi kế hoạch vào docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+     (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+  5. Reviewer review kế hoạch và đưa ra feedback
+  6. Main Agent tổng hợp và báo cáo kết quả cuối cùng
+- Sử dụng Architect, Reviewer (research) → Planner → Reviewer (review plan)
 
 **Khi gặp từ khóa "fast fix" ở dòng đầu tiên của chat:**
 - Thực hiện quy trình 3 bước nhanh:
@@ -331,6 +352,7 @@ Tôi sẽ điều phối Planner để lên kế hoạch chi tiết:
 - Phân tích yêu cầu và context hiện tại
 - Lập kế hoạch từng bước cụ thể
 - Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+  (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 
 ⏳ Bắt đầu lập kế hoạch...
 ```
@@ -338,6 +360,7 @@ Tôi sẽ điều phối Planner để lên kế hoạch chi tiết:
 #### **Đặc điểm của Do Plan:**
 - **CHI TIẾT**: Planner tạo kế hoạch step-by-step
 - **LƯU TRỮ**: Kế hoạch được ghi vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+  (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 - **TÁI SỬ DỤNG**: Có thể dùng lại kế hoạch cho các task tương tự
 - **THEO DÕI**: Dễ dàng track progress theo kế hoạch đã lập
 
@@ -386,6 +409,7 @@ Tôi sẽ điều phối Reviewer để thực hiện đánh giá chi tiết:
 - Kiểm tra tuân thủ best practices và DDD principles
 - Đánh giá security và performance
 - Ghi báo cáo review vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
+  (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 
 ⏳ Bắt đầu review...
 ```
@@ -478,6 +502,166 @@ Tôi sẽ điều phối Developer để thực hiện implement:
 - Cần implement một feature hoàn chỉnh
 - Muốn tập trung vào coding mà không cần planning/review
 - Có yêu cầu rõ ràng về implementation
+
+### 13. QUY TRÌNH ĐẶC BIỆT - DO RES
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "do res" xuất hiện ở dòng đầu tiên của chat
+- Cần nghiên cứu về architecture, patterns, hoặc technologies
+- Main Agent chuyển sang chế độ research
+
+#### **Template phản hồi khi kích hoạt Do Res:**
+```vietnamese
+🔬 **ĐÃ KÍCH HOẠT QUY TRÌNH DO RES**
+
+Tôi sẽ điều phối nhóm nghiên cứu song song:
+
+🎯 **Mục tiêu**: Nghiên cứu chi tiết và tổng hợp báo cáo
+
+👥 **Nhóm nghiên cứu**:
+- **Architect**: Nghiên cứu về architecture và design patterns
+- **Reviewer**: Nghiên cứu về best practices và compliance
+
+📊 **Main Agent sẽ**:
+- Tổng hợp kết quả từ cả hai agents
+- Ghi báo cáo nghiên cứu vào docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+  (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
+
+⏳ Bắt đầu nghiên cứu...
+```
+
+#### **Đặc điểm của Do Res:**
+- **SONG SONG**: Architect và Reviewer nghiên cứu đồng thời
+- **ĐỘC LẬP**: Mỗi agent nghiên cứu theo góc nhìn riêng
+- **TỔNG HỢP**: Main Agent kết hợp kết quả từ cả hai
+- **LƯU TRỮ**: Kết quả được ghi vào file docs/research/
+- **TOÀN DIỆN**: Bao gồm cả technical và quality perspectives
+
+#### **Output của Do Res:**
+Main Agent sẽ tạo file docs/research/{week-of-year}-{increase-number}-{task-name}-research.md với cấu trúc:
+```markdown
+# Research Report: [Tên topic]
+
+## Executive Summary
+[Tóm tắt kết quả nghiên cứu chính]
+
+## Architecture Research (by Architect)
+### Current State Analysis
+[Phân tích hiện trạng]
+
+### Recommended Patterns
+[Patterns được khuyến nghị]
+
+### Technology Stack Evaluation
+[Đánh giá technology stack]
+
+## Quality & Compliance Research (by Reviewer)
+### Best Practices Analysis
+[Phân tích best practices]
+
+### Compliance Assessment
+[Đánh giá tuân thủ standards]
+
+### Risk Assessment
+[Đánh giá rủi ro]
+
+## Consolidated Findings
+### Key Insights
+1. [Insight 1]
+2. [Insight 2]
+3. [Insight 3]
+
+### Recommendations
+1. [Khuyến nghị 1]
+2. [Khuyến nghị 2]
+3. [Khuyến nghị 3]
+
+## Next Steps
+- [ ] [Action item 1]
+- [ ] [Action item 2]
+```
+
+#### **Khi nào sử dụng Do Res:**
+- Cần nghiên cứu về technology choices
+- Đánh giá architecture patterns
+- Research về industry best practices
+- Phân tích compliance requirements
+- Investigate về performance optimization approaches
+
+### 14. QUY TRÌNH ĐẶC BIỆT - FULL RES
+
+#### **Kích hoạt tự động khi:**
+- Từ khóa "full res" xuất hiện ở dòng đầu tiên của chat
+- Cần quy trình nghiên cứu toàn diện từ research đến planning
+- Main Agent chuyển sang chế độ full research workflow
+
+#### **Template phản hồi khi kích hoạt Full Res:**
+```vietnamese
+🔬📋 **ĐÃ KÍCH HOẠT QUY TRÌNH FULL RES**
+
+Tôi sẽ điều phối quy trình nghiên cứu toàn diện:
+
+🎯 **Mục tiêu**: Nghiên cứu → Lập kế hoạch → Review kế hoạch
+
+📊 **Quy trình Full Res (3 giai đoạn):**
+
+**Giai đoạn 1 - Research:**
+- **Architect**: Nghiên cứu architecture và patterns
+- **Reviewer**: Nghiên cứu best practices và compliance
+- **Main Agent**: Tổng hợp và ghi docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+
+**Giai đoạn 2 - Planning:**
+- **Planner**: Dựa trên research để lập kế hoạch chi tiết
+- **Main Agent**: Ghi kế hoạch vào docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+
+**Giai đoạn 3 - Plan Review:**
+- **Reviewer**: Review kế hoạch và đưa ra feedback
+- **Main Agent**: Tổng hợp và báo cáo kết quả cuối cùng
+
+⏳ Bắt đầu Full Research workflow...
+```
+
+#### **Đặc điểm của Full Res:**
+- **TOÀN DIỆN**: Từ research → planning → review planning
+- **TUẦN TỰ**: 3 giai đoạn thực hiện theo thứ tự
+- **SONG SONG**: Research phase sử dụng 2 agents đồng thời
+- **LƯU TRỮ**: Tạo cả research report và implementation plan
+- **FEEDBACK LOOP**: Plan được review để đảm bảo chất lượng
+
+#### **Workflow Full Res:**
+```
+Research Phase (Parallel):
+├── Architect researches → Architecture insights
+└── Reviewer researches → Best practices insights
+                    ↓
+Main Agent consolidates → docs/research/{filename}
+                    ↓
+Planning Phase (Sequential):
+Planner creates plan based on research → docs/plan/{filename}
+                    ↓
+Review Phase (Sequential):
+Reviewer reviews plan → Final feedback & recommendations
+                    ↓
+Main Agent reports final consolidated results
+```
+
+#### **Output Files từ Full Res:**
+1. **docs/research/{week-of-year}-{increase-number}-{task-name}-research.md**
+   - Consolidated research findings
+   - Architecture recommendations
+   - Best practices analysis
+
+2. **docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md**
+   - Implementation plan based on research
+   - Step-by-step execution guide
+   - Resource requirements
+
+#### **Khi nào sử dụng Full Res:**
+- Bắt đầu project mới hoặc major feature
+- Cần research thoroughly trước khi implement
+- Muốn đảm bảo plan được review trước execution
+- Complex requirements cần phân tích kỹ lưỡng
+- Strategic decisions về architecture và technology
 
 ## Project Overview
 
