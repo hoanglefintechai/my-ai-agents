@@ -33,9 +33,9 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - **increase-number**: Luôn là 3 chữ số tăng dần (001, 002, 003...)
 - **DUYÊN NHẤT**: Combination `{week-of-year}-{increase-number}` PHẢI duy nhất trong từng thư mục
 - **Ví dụ**: 
-  - `docs/plan/35-001-user-auth-plan.md`
-  - `docs/review/35-002-order-validation-review.md`
-  - `docs/research/35-003-payment-integration-research.md`
+  - `docs/claude/35-001-user-auth-plan.md`
+  - `docs/claude/35-002-order-validation-review.md`
+  - `docs/claude/35-003-payment-integration-research.md`
 
 ### 1. Nhận diện Loại Công việc và Agent Phù hợp
 
@@ -44,7 +44,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - Thực hiện lập kế hoạch chi tiết:
   1. Planner phân tích yêu cầu và context
   2. Tạo kế hoạch step-by-step 
-  3. Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+  3. Ghi kế hoạch vào file docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md
      (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
 - Chỉ sử dụng Planner agent
 
@@ -52,7 +52,7 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - Thực hiện review chi tiết:
   1. Reviewer phân tích code và thực hiện đánh giá
   2. Tạo báo cáo review toàn diện
-  3. Ghi kết quả vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
+  3. Ghi kết quả vào file docs/claude/{week-of-year}-{increase-number}-{task-name}-review.md
      (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
 - Chỉ sử dụng Reviewer agent
 
@@ -77,16 +77,16 @@ Claude Code PHẢI tự động phân công công việc cho các sub-agents ph�
 - Thực hiện nghiên cứu độc lập:
   1. Architect và Reviewer nghiên cứu song song
   2. Main Agent tổng hợp kết quả từ cả hai agents
-  3. Ghi kết quả vào file docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+  3. Ghi kết quả vào file docs/claude/{week-of-year}-{increase-number}-{task-name}-research.md
      (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
 - Sử dụng Architect và Reviewer agents song song
 
 **Khi gặp từ khóa "full res" ở dòng đầu tiên của chat:**
 - Thực hiện quy trình nghiên cứu toàn diện:
   1. Architect và Reviewer nghiên cứu song song
-  2. Main Agent tổng hợp và ghi kết quả nghiên cứu vào docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+  2. Main Agent tổng hợp và ghi kết quả nghiên cứu vào docs/claude/{week-of-year}-{increase-number}-{task-name}-research.md
   3. Planner dựa trên kết quả nghiên cứu để lập kế hoạch
-  4. Ghi kế hoạch vào docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+  4. Ghi kế hoạch vào docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md
      (increase-number luôn là 3 chữ số tăng dần, duy nhất trong thư mục)
   5. Reviewer review kế hoạch và đưa ra feedback
   6. Main Agent tổng hợp và báo cáo kết quả cuối cùng
@@ -370,7 +370,7 @@ Tôi sẽ điều phối Planner để lên kế hoạch chi tiết:
 📝 **Planner sẽ**:
 - Phân tích yêu cầu và context hiện tại
 - Lập kế hoạch từng bước cụ thể
-- Ghi kế hoạch vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+- Ghi kế hoạch vào file docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md
   (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 
 ⏳ Bắt đầu lập kế hoạch...
@@ -378,13 +378,13 @@ Tôi sẽ điều phối Planner để lên kế hoạch chi tiết:
 
 #### **Đặc điểm của Do Plan:**
 - **CHI TIẾT**: Planner tạo kế hoạch step-by-step
-- **LƯU TRỮ**: Kế hoạch được ghi vào file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+- **LƯU TRỮ**: Kế hoạch được ghi vào file docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md
   (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 - **TÁI SỬ DỤNG**: Có thể dùng lại kế hoạch cho các task tương tự
 - **THEO DÕI**: Dễ dàng track progress theo kế hoạch đã lập
 
 #### **Output của Do Plan:**
-Planner sẽ tạo file docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md với cấu trúc:
+Planner sẽ tạo file docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md với cấu trúc:
 ```markdown
 # Kế hoạch thực hiện: [Tên task]
 
@@ -427,7 +427,7 @@ Tôi sẽ điều phối Reviewer để thực hiện đánh giá chi tiết:
 - Phân tích code quality và architecture
 - Kiểm tra tuân thủ best practices và DDD principles
 - Đánh giá security và performance
-- Ghi báo cáo review vào file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md
+- Ghi báo cáo review vào file docs/claude/{week-of-year}-{increase-number}-{task-name}-review.md
   (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 
 ⏳ Bắt đầu review...
@@ -435,12 +435,12 @@ Tôi sẽ điều phối Reviewer để thực hiện đánh giá chi tiết:
 
 #### **Đặc điểm của Do Rev:**
 - **TOÀN DIỆN**: Reviewer đánh giá nhiều khía cạnh (quality, security, performance)
-- **LƯU TRỮ**: Kết quả review được ghi vào file docs/review/
+- **LƯU TRỮ**: Kết quả review được ghi vào file docs/claude/
 - **TÁI SỬ DỤNG**: Có thể tham khảo cho các review tương tự
 - **THEO DÕI**: Dễ dàng track các vấn đề và cải thiện
 
 #### **Output của Do Rev:**
-Reviewer sẽ tạo file docs/review/{week-of-year}-{increase-number}-{task-name}-review.md với cấu trúc:
+Reviewer sẽ tạo file docs/claude/{week-of-year}-{increase-number}-{task-name}-review.md với cấu trúc:
 ```markdown
 # Review Report: [Tên task]
 
@@ -612,7 +612,7 @@ Tôi sẽ điều phối nhóm nghiên cứu song song:
 
 📊 **Main Agent sẽ**:
 - Tổng hợp kết quả từ cả hai agents
-- Ghi báo cáo nghiên cứu vào docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+- Ghi báo cáo nghiên cứu vào docs/claude/{week-of-year}-{increase-number}-{task-name}-research.md
   (increase-number luôn là 3 chữ số tăng dần: 001, 002, 003...)
 
 ⏳ Bắt đầu nghiên cứu...
@@ -622,11 +622,11 @@ Tôi sẽ điều phối nhóm nghiên cứu song song:
 - **SONG SONG**: Architect và Reviewer nghiên cứu đồng thời
 - **ĐỘC LẬP**: Mỗi agent nghiên cứu theo góc nhìn riêng
 - **TỔNG HỢP**: Main Agent kết hợp kết quả từ cả hai
-- **LƯU TRỮ**: Kết quả được ghi vào file docs/research/
+- **LƯU TRỮ**: Kết quả được ghi vào file docs/claude/
 - **TOÀN DIỆN**: Bao gồm cả technical và quality perspectives
 
 #### **Output của Do Res:**
-Main Agent sẽ tạo file docs/research/{week-of-year}-{increase-number}-{task-name}-research.md với cấu trúc:
+Main Agent sẽ tạo file docs/claude/{week-of-year}-{increase-number}-{task-name}-research.md với cấu trúc:
 ```markdown
 # Research Report: [Tên topic]
 
@@ -696,11 +696,11 @@ Tôi sẽ điều phối quy trình nghiên cứu toàn diện:
 **Giai đoạn 1 - Research:**
 - **Architect**: Nghiên cứu architecture và patterns
 - **Reviewer**: Nghiên cứu best practices và compliance
-- **Main Agent**: Tổng hợp và ghi docs/research/{week-of-year}-{increase-number}-{task-name}-research.md
+- **Main Agent**: Tổng hợp và ghi docs/claude/{week-of-year}-{increase-number}-{task-name}-research.md
 
 **Giai đoạn 2 - Planning:**
 - **Planner**: Dựa trên research để lập kế hoạch chi tiết
-- **Main Agent**: Ghi kế hoạch vào docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md
+- **Main Agent**: Ghi kế hoạch vào docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md
 
 **Giai đoạn 3 - Plan Review:**
 - **Reviewer**: Review kế hoạch và đưa ra feedback
@@ -722,10 +722,10 @@ Research Phase (Parallel):
 ├── Architect researches → Architecture insights
 └── Reviewer researches → Best practices insights
                     ↓
-Main Agent consolidates → docs/research/{filename}
+Main Agent consolidates → docs/claude/{filename}
                     ↓
 Planning Phase (Sequential):
-Planner creates plan based on research → docs/plan/{filename}
+Planner creates plan based on research → docs/claude/{filename}
                     ↓
 Review Phase (Sequential):
 Reviewer reviews plan → Final feedback & recommendations
@@ -734,12 +734,12 @@ Main Agent reports final consolidated results
 ```
 
 #### **Output Files từ Full Res:**
-1. **docs/research/{week-of-year}-{increase-number}-{task-name}-research.md**
+1. **docs/claude/{week-of-year}-{increase-number}-{task-name}-research.md**
    - Consolidated research findings
    - Architecture recommendations
    - Best practices analysis
 
-2. **docs/plan/{week-of-year}-{increase-number}-{task-name}-plan.md**
+2. **docs/claude/{week-of-year}-{increase-number}-{task-name}-plan.md**
    - Implementation plan based on research
    - Step-by-step execution guide
    - Resource requirements
